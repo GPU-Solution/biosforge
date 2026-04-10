@@ -1,0 +1,5 @@
+# biosforge dependencies
+# Core - no external dependencies (pure Python + tkinter)
+
+# Optional: for enhanced UEFI parsing
+# uefi-firmware-parser>=1.11
