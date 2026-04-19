@@ -7,13 +7,14 @@ New vendors are added by importing their parser here.
 from typing import Optional
 from .base import VendorParser, VendorBiosInfo
 from .hp import HPParser
+from .dell import DellParser
 
 
 # Register all vendor parsers here.
 # Order matters: more specific parsers should come first.
 VENDOR_PARSERS: list[VendorParser] = [
+    DellParser(),
     HPParser(),
-    # DellParser(),    # TODO
     # LenovoParser(),  # TODO
     # AsusParser(),    # TODO
     # AcerParser(),    # TODO

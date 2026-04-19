@@ -16,7 +16,7 @@ Rebuild flashable SPI images from programmer dumps + vendor BIOS updates + clean
 ### Supported vendors
 
 - **HP** (softpaq .bin files)
-- Dell (planned)
+- **Dell** (PFS update .exe files, via BIOSUtilities)
 - Lenovo (planned)
 - Asus (planned)
 

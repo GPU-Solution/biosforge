@@ -6,6 +6,19 @@ from typing import Optional
 
 
 @dataclass
+class ExtractedComponent:
+    """A single firmware component extracted from a vendor update."""
+    name: str           # e.g. "System BIOS", "Embedded Controller"
+    data: bytes
+    version: str = ""
+    filename: str = ""  # Original extracted filename
+
+    @property
+    def size_kb(self) -> float:
+        return len(self.data) / 1024
+
+
+@dataclass
 class VendorBiosInfo:
     """Information extracted from a vendor BIOS update image."""
     vendor: str
@@ -13,9 +26,12 @@ class VendorBiosInfo:
     version: Optional[str] = None
     bios_data: Optional[bytes] = None  # Extracted BIOS region
     me_data: Optional[bytes] = None    # Extracted ME data (if present)
+    ec_data: Optional[bytes] = None    # Extracted EC firmware
+    ec_backup_data: Optional[bytes] = None  # Extracted EC backup
     header_size: int = 0
     total_size: int = 0
     notes: list[str] = field(default_factory=list)
+    components: list[ExtractedComponent] = field(default_factory=list)
 
     @property
     def has_bios(self) -> bool:
@@ -25,6 +41,18 @@ class VendorBiosInfo:
     def has_me(self) -> bool:
         return self.me_data is not None and len(self.me_data) > 0
 
+    @property
+    def has_ec(self) -> bool:
+        return self.ec_data is not None and len(self.ec_data) > 0
+
+    def get_component(self, name_fragment: str) -> Optional[ExtractedComponent]:
+        """Find a component by partial name match (case-insensitive)."""
+        frag = name_fragment.lower()
+        for c in self.components:
+            if frag in c.name.lower():
+                return c
+        return None
+
     def summary(self) -> str:
         lines = [f"Vendor BIOS Image: {self.vendor}"]
         if self.model:
@@ -32,7 +60,8 @@ class VendorBiosInfo:
         if self.version:
             lines.append(f"  Version: {self.version}")
         lines.append(f"  Total size: {self.total_size:,} bytes")
-        lines.append(f"  Header: {self.header_size} bytes")
+        if self.header_size:
+            lines.append(f"  Header: {self.header_size} bytes")
         if self.has_bios:
             lines.append(
                 f"  BIOS data: {len(self.bios_data):,} bytes "
@@ -41,8 +70,17 @@ class VendorBiosInfo:
         if self.has_me:
             lines.append(
                 f"  ME data: {len(self.me_data):,} bytes "
-                f"({len(self.me_data) / 1024 / 1024:.2f} MB) [partial]"
+                f"({len(self.me_data) / 1024 / 1024:.2f} MB)"
             )
+        if self.has_ec:
+            lines.append(
+                f"  EC data: {len(self.ec_data):,} bytes "
+                f"({len(self.ec_data) / 1024:.1f} KB)"
+            )
+        if self.components:
+            lines.append(f"  Components ({len(self.components)}):")
+            for c in self.components:
+                lines.append(f"    {c.name} v{c.version} ({c.size_kb:.1f} KB)")
         for note in self.notes:
             lines.append(f"  Note: {note}")
         return "\n".join(lines)
