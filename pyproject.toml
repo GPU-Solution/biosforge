@@ -4,7 +4,7 @@ build-backend = "setuptools.backends._legacy:_Backend"
 
 [project]
 name = "biosforge"
-version = "0.1.0"
+version = "0.2.0a0"
 description = "Open source UEFI/BIOS firmware reconstruction toolkit"
 readme = "README.md"
 license = {text = "BSD-2-Clause"}

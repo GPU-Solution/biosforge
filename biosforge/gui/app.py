@@ -36,7 +36,7 @@ class BiosForgeApp:
 
     def __init__(self):
         self.root = tk.Tk()
-        self.root.title("biosforge v0.1.0 — SPI Flash Reconstruction Toolkit")
+        self.root.title("biosforge v0.2.0-alpha — SPI Flash Reconstruction Toolkit")
         self.root.geometry("1000x750")
         self.root.minsize(850, 600)
 
@@ -522,7 +522,7 @@ class BiosForgeApp:
     def _show_about(self):
         messagebox.showinfo(
             "About biosforge",
-            "biosforge v0.1.0\n\n"
+            "biosforge v0.2.0-alpha\n\n"
             "Open source UEFI/BIOS firmware reconstruction toolkit.\n\n"
             "Integrates: UEFITool, ME Analyzer, me_cleaner,\n"
             "ifdtool, flashrom, BIOSUtilities, MCExtractor\n\n"
